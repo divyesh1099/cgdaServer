@@ -63,7 +63,7 @@ class BillProduct(models.Model):
     frieghtCharge = models.DecimalField(max_digits=10, decimal_places=2)
     product_category_name = models.CharField(max_length=100)
     product_category_id = models.CharField(max_length=50)
-    billing_cycle_details = models.OneToOneField(BillBillingCycleDetail, on_delete=models.CASCADE)
+    billing_cycle_details = models.ForeignKey(BillBillingCycleDetail, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.productName
