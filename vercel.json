@@ -1,13 +1,24 @@
 {
-    "builds": [{
-        "src": "cgdaServer/wsgi.py",
-        "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-    }],
+    "version": 2,
+    "builds": [
+      {
+        "src": "cgdaServer/**/*.py",
+        "use": "@vercel/python"
+      }
+    ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "cgdaServer/wsgi.py"
-        }
-    ]
-}
+      {
+        "src": "/api/(.*)",
+        "dest": "cgdaServer/api/$1.py"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "cgdaServer/manage.py"
+      }
+    ],
+    "env": {
+      "DJANGO_SETTINGS_MODULE": "cgdaServer.settings",
+      "VERCEL": "1"
+    }
+  }
+  
