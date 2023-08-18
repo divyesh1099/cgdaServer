@@ -24,6 +24,7 @@ router = DefaultRouter()
 
 # Register Viewsets with Router
 router.register('bill', views.BillViewSet, basename='bill')
+router.register('billOrder', views.BillOrderViewSet, basename='billOrder')
 router.register('billProduct', views.BillProductViewSet, basename='billProduct')
 router.register('billSummary', views.BillSummaryViewSet, basename='billSummary')
 router.register('billConsignee', views.BillConsigneeViewSet, basename='billConsignee')
@@ -34,4 +35,5 @@ router.register('billBillingCycleDetail', views.BillBillingCycleDetailViewSet, b
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('api/', include('api.urls'))
 ]

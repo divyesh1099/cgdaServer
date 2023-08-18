@@ -1,7 +1,26 @@
 from rest_framework import serializers
 from .models import *
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your serializers here
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Bill Summary Serializers Fields
+# ---------------------------------------------------------------------------------------------------------------------------------
+class CustomizedTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+
+        # Customized Response, removing the Refresh Token
+        if data["refresh"]:
+            data.pop("refresh")
+        if data["access"]:
+            token = data["access"]
+            data["token"] = token
+            data.pop("access")
+        return data
+
 # ---------------------------------------------------------------------------------------------------------------------------------
 # Bill Summary Serializers Fields
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -30,11 +49,6 @@ class BillSummaryDataSerializer(serializers.ModelSerializer):
         return bill_summary_data
 
 class BillSummarySerializer(serializers.Serializer):
-    status = serializers.CharField(max_length=10)
-    iat = serializers.CharField(max_length=20)
-    sub = serializers.CharField(max_length=20)
-    aud = serializers.CharField(max_length=20)
-    iss = serializers.CharField(max_length=20)
     data = BillSummaryDataSerializer(many=True)
     
     class Meta:
@@ -201,11 +215,6 @@ class BillOrderSerializer(serializers.Serializer):
         return order_data
     
 class BillSerializer(serializers.Serializer):
-    status = serializers.CharField(max_length=10)
-    iat = serializers.CharField(max_length=20)
-    sub = serializers.CharField(max_length=20)
-    aud = serializers.CharField(max_length=20)
-    iss = serializers.CharField(max_length=20)
     data = BillOrderSerializer(many=True)
     
     class Meta:

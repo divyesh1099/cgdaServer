@@ -20,11 +20,6 @@ class BillSummaryData(models.Model):
         return f"{self.date} - Count: {self.count}, Amount: {self.amount}"
     
 class BillSummary(models.Model):
-    status = models.CharField(max_length=10)
-    iat = models.CharField(max_length=20)
-    sub = models.CharField(max_length=20)
-    aud = models.CharField(max_length=20)
-    iss = models.CharField(max_length=20)
     data = models.ManyToManyField(BillSummaryData, related_name='billSummaries')
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -138,9 +133,4 @@ class BillOrder(models.Model):
         return self.orderId
     
 class Bill(models.Model):
-    status = models.CharField(max_length=10)
-    iat = models.CharField(max_length=20)
-    sub = models.CharField(max_length=20)
-    aud = models.CharField(max_length=20)
-    iss = models.CharField(max_length=20)
     data = models.ManyToManyField(BillOrder, related_name='bills')
