@@ -250,3 +250,203 @@ class BillSerializer(serializers.Serializer):
         bill_data, created = Bill.objects.get_or_create(**validated_data)
         bill_data.data.set(datas)
         return bill_data
+
+# class BillConsignProductsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BillConsignProducts
+#         fields = '__all__'
+
+# class BillConsignmentSerializer(serializers.ModelSerializer):
+#     items = BillConsignProductsSerializer(many=True, read_only=True)
+
+#     class Meta:
+#         model = BillConsignment
+#         fields = '__all__'
+
+# class BillDetailsSerializer(serializers.ModelSerializer):
+#     consignmentDetails = BillConsignmentSerializer(many=True, read_only=True)
+
+#     class Meta:
+#         model = BillDetails
+#         fields = '__all__'
+
+# class BillDeductionsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BillDeductions
+#         fields = '__all__'
+
+class BillSerializer(serializers.Serializer):
+    class Meta:
+        model = BillDetailsData
+        fields = ('__all__')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop('id', None)
+        return representation
+
+    def create(self, validated_data):
+        billDetailsDatas = validated_data.pop('')
+
+# Updated Serializers
+class BillDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillDetails
+        fields = '__all__'
+
+class BillDeductionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillDeductions
+        fields = '__all__'
+
+class BillDeductionsAddlDtlsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillDeductionsAddlDtls
+        fields = '__all__'
+
+class BillingCycleDetailsSerializer(serializers.Serializer):
+    unit = serializers.CharField(max_length=100, allow_blank=True)
+    value = serializers.DecimalField(max_digits=15, decimal_places=2, default=0.00)
+
+class BillConsignProductsSerializer(serializers.ModelSerializer):
+    product_code = serializers.CharField(allow_blank=True, required=False)
+    class Meta:
+        model = BillConsignProducts
+        fields = '__all__'
+
+    def create(self, validated_data):
+        billing_cycle_details_data = validated_data.pop('billing_cycle_details')
+        instance = super().create(validated_data)
+        instance.billing_cycle_details_unit = billing_cycle_details_data['unit']
+        instance.billing_cycle_details_value = billing_cycle_details_data['value']
+        instance.save()
+        return instance
+
+class BillConsignmentSerializer(serializers.ModelSerializer):
+    consignment_details = BillConsignProductsSerializer(many=True)
+
+    class Meta:
+        model = BillConsignment
+        fields = '__all__'
+
+class DataItemSerializer(serializers.Serializer):
+    sgst = serializers.FloatField()
+    productBrand = serializers.CharField(max_length=100)
+    suppliedQuantity = serializers.FloatField()
+    freightSgst = serializers.FloatField()
+    quantityOrdered = serializers.FloatField()
+    igst = serializers.FloatField()
+    productName = serializers.CharField(max_length=255)
+    tdsUnderGst = serializers.CharField(max_length=20)
+    quantityUnitType = serializers.CharField(max_length=100)
+    unitPrice = serializers.FloatField()
+    totalValue = serializers.FloatField()
+    actualDeliveryDate = serializers.DateField()
+    tdsUnderIncometax = serializers.CharField(max_length=20)
+    hsnCode = serializers.CharField(max_length=20)
+    freightCgst = serializers.FloatField()
+    freightUtgst = serializers.FloatField()
+    expectedDeliveryDate = serializers.DateField()
+    cgst = serializers.FloatField()
+    freightIgst = serializers.FloatField()
+    cess = serializers.FloatField()
+    freightCess = serializers.FloatField()
+    utgst = serializers.FloatField()
+    productCode = serializers.CharField(max_length=255)
+    offering_type = serializers.CharField(max_length=50)
+    acceptedQuantity = serializers.FloatField()
+    frieghtCharge = serializers.FloatField()
+    product_category_name = serializers.CharField(max_length=100)
+    product_category_id = serializers.CharField(max_length=100)
+    billing_cycle_details = serializers.DictField(child=serializers.CharField(), required=False)
+
+class ConsignmentDetailsSerializer(serializers.Serializer):
+    consigneeState = serializers.CharField(max_length=50)
+    consigneeLastname = serializers.CharField(max_length=100)
+    consigneeMobile = serializers.CharField(max_length=15)
+    consigneeFname = serializers.CharField(max_length=100)
+    items = BillConsignProductsSerializer(many=True)
+    consigneeAddress = serializers.CharField(max_length=255)
+    consigneePin = serializers.CharField(max_length=10)
+    consigneeDistrict = serializers.CharField(max_length=80)
+
+class DataSerializer(serializers.Serializer):
+    pgMode = serializers.CharField(max_length=10)
+    orderId = serializers.CharField(max_length=50)
+    orderDate = serializers.DateField()
+    orderAmount = serializers.DecimalField(max_digits=15, decimal_places=2)
+    billNo = serializers.CharField(max_length=50)
+    billDate = serializers.DateField()
+    billAmount = serializers.DecimalField(max_digits=15, decimal_places=2)
+    demandId = serializers.CharField(max_length=100)
+    buyerOrg = serializers.CharField(max_length=255)
+    buyerName = serializers.CharField(max_length=100)
+    buyerEmail = serializers.CharField(max_length=100)
+    buyerMobile = serializers.CharField(max_length=15)
+    buyerAddress = serializers.CharField(max_length=255)
+    buyerPincode = serializers.CharField(max_length=10)
+    buyerDistrict = serializers.CharField(max_length=80)
+    buyerState = serializers.CharField(max_length=50)
+    buyerGstn = serializers.CharField(max_length=30, allow_blank=True, required=False)
+    vendorName = serializers.CharField(max_length=255)
+    vendorAddress = serializers.CharField(max_length=255)
+    vendorCode = serializers.CharField(max_length=50)
+    vendorDistrict = serializers.CharField(max_length=80)
+    vendorState = serializers.CharField(max_length=50)
+    vendorPin = serializers.CharField(max_length=10)
+    vendorBankAccountNo = serializers.CharField(max_length=100)
+    vendorBankIfscCode = serializers.CharField(max_length=15)
+    vendorPan = serializers.CharField(max_length=12)
+    vendorGstn = serializers.CharField(max_length=30, allow_blank=True, required=False)
+    vendorUniqueId = serializers.CharField(max_length=10)
+    vendorGstStatus = serializers.CharField(max_length=255, allow_blank=True, required=False)
+    sellerId = serializers.CharField(max_length=255)
+    supplyOrderNo = serializers.CharField(max_length=255)
+    supplyOrderDate = serializers.DateField()
+    designationFinancial = serializers.CharField(max_length=50)
+    ifdConcurrance = serializers.CharField(max_length=1)
+    ifdDiaryNo = serializers.CharField(max_length=50)
+    ifdDiaryDate = serializers.DateField()
+    consignmentDetails = ConsignmentDetailsSerializer(many=True)
+    faFile = serializers.URLField()
+    cracFile = serializers.URLField()
+    contractFile = serializers.URLField()
+    receiptNo = serializers.CharField(max_length=100)
+    receiptDate = serializers.DateField()
+    cracDate = serializers.DateField()
+    billFile = serializers.URLField()
+    invoiceFile = serializers.URLField()
+    invoiceDate = serializers.DateField()
+    invoiceNo = serializers.CharField(max_length=255)
+    gemInvoiceNo = serializers.CharField(max_length=100)
+    deductions = BillDeductionsSerializer(many=True, required=False)
+    createOn = serializers.DateTimeField()
+    transactionId = serializers.DecimalField(max_digits=40, decimal_places=0)
+
+    def create(self, validated_data):
+        consignment_data = validated_data.pop('bill_consignment', {})
+        deductions_data = validated_data.pop('bill_deductions', {})
+
+        bill_details = BillDetails.objects.create(**validated_data)
+
+        consignment_serializer = BillConsignmentSerializer(data=consignment_data)
+        if consignment_serializer.is_valid():
+            consignment_serializer.save(gem_invoice_no=bill_details)
+
+        deductions_serializer = BillDeductionsSerializer(data=deductions_data)
+        if deductions_serializer.is_valid():
+            deductions_serializer.save(gem_invoice_no=bill_details)
+
+        return bill_details
+class RootSerializer(serializers.Serializer):
+    data = DataSerializer(many=True)
+
+    def create(self, validated_data):
+        billDetailsDatas = validated_data.pop('data')
+        datas = []
+        for billDetailsData in billDetailsDatas:
+            bill_details_data, created = BillDetails.objects.get_or_create(**billDetailsData)
+            datas.append(bill_details_data)
+        bill_data, created = BillDetailsData.objects.get_or_create(**validated_data)
+        bill_data.data.set(datas)
+        return bill_data

@@ -25,12 +25,19 @@ router = DefaultRouter()
 # Register Viewsets with Router
 router.register('bill', views.BillViewSet, basename='bill')
 router.register('billOrder', views.BillOrderViewSet, basename='billOrder')
+router.register('billDetails', views.BillDetailsViewSet, basename='billDetails')
 router.register('billProduct', views.BillProductViewSet, basename='billProduct')
 router.register('billSummary', views.BillSummaryViewSet, basename='billSummary')
 router.register('billConsignee', views.BillConsigneeViewSet, basename='billConsignee')
 router.register('billSummaryData', views.BillSummaryDataViewSet, basename='billSummaryData')
 router.register('billSummaryGemInvoice', views.BillSummaryGemInvoiceViewSet, basename='billSummaryGemInvoice')
 router.register('billBillingCycleDetail', views.BillBillingCycleDetailViewSet, basename='billBillingCycleDetailViewSet')
+router.register('bill-details', views.BillDetailsListView, basename='bill-details-list')
+router.register('bill-consignments', views.BillConsignmentListView, basename='bill-consignments-list')
+router.register('bill-consign-products', views.BillConsignProductsListView, basename='bill-consign-products-list')
+router.register('bill-deductions', views.BillDeductionsListView, basename='bill-deductions-list')
+router.register('bill-deductions-addl-dtls', views.BillDeductionsAddlDtlsListView, basename='bill-deductions-addl-dtls-list')
+router.register('json-data', views.JSONDataView, basename='json-data')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

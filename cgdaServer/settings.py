@@ -88,10 +88,21 @@ WSGI_APPLICATION = 'cgdaServer.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    # local database
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+    # AWS PgAdmin Database
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'gemilms',       # Database name
+    #     'USER': 'postgres',      # Username
+    #     'PASSWORD': 'password',  # Password
+    #     'HOST': 'gemilms.cddooyeevkxm.eu-west-1.rds.amazonaws.com',     # Database host
+    #     'PORT': '5432',          # Default PostgreSQL port
+    # },
 }
 
 

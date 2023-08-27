@@ -1,0 +1,3 @@
+Bill Order = Bill Details
+Bill Consignee = Bill Consignment
+Bill Product = Bill Consign Products
